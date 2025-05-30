@@ -1,5 +1,7 @@
 import { Component } from 'react';
 
+import { Link } from 'react-router';
+
 import type { Student } from '../../../types/supabase';
 
 interface StudentTableProps {
@@ -51,11 +53,15 @@ class StudentTable extends Component<StudentTableProps> {
               <td>{this.renderGrade(student.management)}</td>
               <td>{this.props.calculateAverage(student)}</td>
               <td>
+                <Link to={`/students/edit/${student.id}`}>
+                  <button className="edit-button">Edit</button>
+                </Link>
+
                 <button
                   className="delete-button"
                   onClick={() => this.props.onDelete(student.id)}
                 >
-                  &times;
+                  Del
                 </button>
               </td>
             </tr>

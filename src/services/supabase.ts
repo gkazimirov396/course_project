@@ -25,7 +25,7 @@ class SupabaseService {
     const { data, error } = await this.supabase
       .from('students')
       .select('*')
-      .order('created_at', { ascending: false });
+      .order('id', { ascending: true });
 
     if (error) throw error;
     return data;
@@ -35,7 +35,8 @@ class SupabaseService {
     const { data, error } = await this.supabase
       .from('students')
       .select('*')
-      .eq('id', id);
+      .eq('id', id)
+      .single();
 
     if (error) throw error;
     return data;
@@ -52,6 +53,18 @@ class SupabaseService {
     return data;
   }
 
+  public async updateStudent(id: number, student: Partial<NewStudentType>) {
+    const { data, error } = await this.supabase
+      .from('students')
+      .update(student)
+      .eq('id', id)
+      .select('*')
+      .single();
+
+    if (error) throw error;
+    return data;
+  }
+
   public async deleteStudent(id: number) {
     const { error } = await this.supabase
       .from('students')
@@ -59,10 +72,8 @@ class SupabaseService {
       .eq('id', id);
 
     if (error) throw error;
-
     return { success: true };
   }
-
   public async signIn(email: string, password: string) {
     const { data, error } = await this.supabase.auth.signInWithPassword({
       email,
@@ -70,10 +81,8 @@ class SupabaseService {
     });
 
     if (error) throw error;
-
     return data;
   }
-
   public async signUp(email: string, password: string, username: string) {
     const { data, error } = await this.supabase.auth.signUp({
       email,
@@ -86,10 +95,8 @@ class SupabaseService {
     });
 
     if (error) throw error;
-
     return data;
   }
-
   public async signOut() {
     const { error } = await this.supabase.auth.signOut();
 

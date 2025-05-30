@@ -1,16 +1,18 @@
 import { Component, type ChangeEvent, type FormEvent } from 'react';
 
 import { withRouter } from '../../hoc/withRouter';
+
 import supabaseService from '../../services/supabase';
 
 import './NewStudent.css';
 
 interface NewStudentProps {
   navigate: (path: string) => void;
+  params: { id?: string };
 }
 
 interface NewStudentState {
-  cyberwars: string | undefined;
+  cyberwars?: string;
   faculty: string;
   first_name: string;
   game_theory?: string;
@@ -19,7 +21,9 @@ interface NewStudentState {
   management?: string;
   oop?: string;
   specialty: string;
-  error?: string;
+  error: string;
+  isEditMode: boolean;
+  studentId: string | null;
 }
 
 class NewStudent extends Component<NewStudentProps, NewStudentState> {
@@ -34,7 +38,36 @@ class NewStudent extends Component<NewStudentProps, NewStudentState> {
     cyberwars: '',
     game_theory: '',
     error: '',
+    isEditMode: false,
+    studentId: null,
   };
+
+  async componentDidMount() {
+    const id = this.props.params.id;
+
+    try {
+      if (id) {
+        const student = await supabaseService.getStudentById(+id);
+
+        this.setState({
+          first_name: student.first_name || '',
+          last_name: student.last_name || '',
+          group: student.group_name || '',
+          faculty: student.faculty || '',
+          specialty: student.specialty || '',
+          management: student.management?.toString() ?? '',
+          oop: student.oop?.toString() ?? '',
+          cyberwars: student.cyberwars?.toString() ?? '',
+          game_theory: student.game_theory?.toString() ?? '',
+          isEditMode: true,
+          studentId: id,
+          error: '',
+        });
+      }
+    } catch (error) {
+      this.setState({ error: 'Error fetching student data.' });
+    }
+  }
 
   handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     this.setState({
@@ -57,6 +90,7 @@ class NewStudent extends Component<NewStudentProps, NewStudentState> {
 
     if (!first_name || !last_name || !group || !faculty || !specialty) {
       this.setState({ error: 'Please fill in all required fields.' });
+
       return false;
     }
 
@@ -70,10 +104,12 @@ class NewStudent extends Component<NewStudentProps, NewStudentState> {
     for (const score of scores) {
       if (score.value !== '') {
         const num = parseFloat(score.value);
+
         if (isNaN(num) || num < 0 || num > 100) {
           this.setState({
             error: `${score.label} must be a number between 0 and 100.`,
           });
+
           return false;
         }
       }
@@ -97,114 +133,139 @@ class NewStudent extends Component<NewStudentProps, NewStudentState> {
       oop,
       cyberwars,
       game_theory,
+      studentId,
+      isEditMode,
     } = this.state;
 
+    const studentData = {
+      first_name,
+      last_name,
+      group_name: group,
+      faculty,
+      specialty,
+      management: parseFloat(management) || null,
+      oop: parseFloat(oop) || null,
+      cyberwars: parseFloat(cyberwars) || null,
+      game_theory: parseFloat(game_theory) || null,
+    };
+
     try {
-      await supabaseService.createStudent({
-        first_name,
-        last_name,
-        group_name: group,
-        faculty,
-        specialty,
-        management: parseFloat(management) || null,
-        oop: parseFloat(oop) || null,
-        cyberwars: parseFloat(cyberwars) || null,
-        game_theory: parseFloat(game_theory) || null,
-      });
+      if (isEditMode && studentId) {
+        await supabaseService.updateStudent(studentId, studentData);
+      } else {
+        await supabaseService.createStudent(studentData);
+      }
 
       this.props.navigate('/students');
     } catch (error) {
-      alert('Error creating student');
+      alert('Error creating/updating student');
       console.error('Error creating student:', error);
     }
   };
-
   render() {
+    const {
+      first_name,
+      last_name,
+      group,
+      faculty,
+      specialty,
+      management,
+      oop,
+      cyberwars,
+      game_theory,
+      error,
+      isEditMode,
+    } = this.state;
+
     return (
       <section className="new-student">
-        <h1>Create New Student</h1>
-
-        <form onSubmit={this.handleSubmit}>
-          {this.state.error && <div className="error">{this.state.error}</div>}
-
-          <label htmlFor="first_name">First Name*</label>
+        <h1>{isEditMode ? 'Edit Student' : 'Add New Student'}</h1>
+        {error && <p className="error">{error}</p>}
+        <form onSubmit={this.handleSubmit} className="student-form">
+          <label>First Name</label>
           <input
-            id="first_name"
             name="first_name"
-            value={this.state.first_name}
+            value={first_name}
             onChange={this.handleChange}
             required
           />
 
-          <label htmlFor="last_name">Last Name*</label>
+          <label>Last Name</label>
           <input
-            id="last_name"
             name="last_name"
-            value={this.state.last_name}
+            value={last_name}
             onChange={this.handleChange}
             required
           />
 
-          <label htmlFor="group">Group*</label>
+          <label>Group</label>
           <input
-            id="group"
             name="group"
-            value={this.state.group}
+            value={group}
             onChange={this.handleChange}
             required
           />
 
-          <label htmlFor="faculty">Faculty*</label>
+          <label>Faculty</label>
           <input
-            id="faculty"
             name="faculty"
-            value={this.state.faculty}
+            value={faculty}
             onChange={this.handleChange}
             required
           />
 
-          <label htmlFor="specialty">Specialty*</label>
+          <label>Specialty</label>
           <input
-            id="specialty"
             name="specialty"
-            value={this.state.specialty}
+            value={specialty}
             onChange={this.handleChange}
             required
           />
 
-          <label htmlFor="management">Management (optional)</label>
+          <label>Management</label>
           <input
-            id="management"
             name="management"
-            value={this.state.management}
+            value={management}
             onChange={this.handleChange}
+            placeholder="0-100 or leave empty"
           />
 
-          <label htmlFor="oop">OOP (optional)</label>
+          <label>OOP</label>
           <input
-            id="oop"
             name="oop"
-            value={this.state.oop}
+            value={oop}
             onChange={this.handleChange}
+            placeholder="0-100 or leave empty"
           />
 
-          <label htmlFor="cyberwars">Cyberwars (optional)</label>
+          <label>Cyberwars</label>
           <input
-            id="cyberwars"
             name="cyberwars"
-            value={this.state.cyberwars}
+            value={cyberwars}
             onChange={this.handleChange}
+            placeholder="0-100 or leave empty"
           />
 
-          <label htmlFor="game_theory">Game Theory (optional)</label>
+          <label>Game Theory</label>
           <input
-            id="game_theory"
             name="game_theory"
-            value={this.state.game_theory}
+            value={game_theory}
             onChange={this.handleChange}
+            placeholder="0-100 or leave empty"
           />
 
-          <button type="submit">Create</button>
+          <div className="button-group">
+            <button type="submit">
+              {isEditMode ? 'Update Student' : 'Create Student'}
+            </button>
+
+            <button
+              type="button"
+              onClick={() => this.props.navigate('/students')}
+            >
+              Cancel
+            </button>
+          </div>
         </form>
       </section>
     );

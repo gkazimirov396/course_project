@@ -87,9 +87,9 @@ class StudentList extends Component<{}, StudentListState> {
       <section className="student-list">
         <h1>Students Performance Table</h1>
 
-        <div className="controls">
+        <div className="toolbar">
           <label>
-            Filter by subject:
+            Фільтр за дисципліною:
             <select value={selectedSubject} onChange={this.handleFilter}>
               <option value="all">All</option>
               <option value="oop">OOP</option>
@@ -100,7 +100,11 @@ class StudentList extends Component<{}, StudentListState> {
           </label>
 
           <Link to="/students/new" className="add-student-link">
-            ➕ Add Student
+            ➕ Додати студента
+          </Link>
+
+          <Link to="/home">
+            <button className="back-button">🏠 На головне меню</button>
           </Link>
         </div>
 

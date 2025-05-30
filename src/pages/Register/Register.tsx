@@ -45,6 +45,7 @@ class Register extends Component<RegisterProps, RegisterState> {
 
   handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
     const { username, email, password, confirmPassword } = this.state;
 
     if (password !== confirmPassword) {
@@ -66,7 +67,6 @@ class Register extends Component<RegisterProps, RegisterState> {
       alert('Registration failed. Please try again.');
     }
   };
-
   render() {
     return (
       <div>
@@ -76,34 +76,43 @@ class Register extends Component<RegisterProps, RegisterState> {
           <input
             type="text"
             name="username"
+            required
             placeholder="Username"
             value={this.state.username}
             onChange={this.handleUsernameChange}
           />
+
           <input
             type="email"
             name="email"
+            required
             placeholder="Email"
             value={this.state.email}
             onChange={this.handleEmailChange}
           />
+
           <input
             type="password"
             name="password"
+            required
             placeholder="Password"
             value={this.state.password}
             onChange={this.handlePasswordChange}
           />
+
           <input
             type="password"
+            required
             name="confirmPassword"
             placeholder="Confirm Password"
             value={this.state.confirmPassword}
             onChange={this.handleConfirmPasswordChange}
           />
+
           <p>
             Already have an account? <Link to="/">Login here</Link>
           </p>
+
           <button type="submit">Register</button>
         </form>
       </div>

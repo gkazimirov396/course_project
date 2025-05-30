@@ -19,11 +19,11 @@ class App extends Component {
 
         <Route path="/students" element={<StudentList />} />
         <Route path="/students/new" element={<NewStudent />} />
+        <Route path="/students/edit/:id" element={<NewStudent />} />
 
         <Route path="*" element={<div>Page not found</div>} />
       </Routes>
     );
   }
 }
-
 export default App;

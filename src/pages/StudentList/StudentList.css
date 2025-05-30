@@ -1,96 +1,91 @@
-.student-list {
-  padding: 2rem;
-  font-family: Arial, sans-serif;
-  background-color: #f9f9f9;
-  min-height: 100vh;
-}
-
-.student-list h1 {
-  text-align: center;
-  margin-bottom: 1.5rem;
-  font-size: 2rem;
-  color: #333;
-}
-
-.controls {
+.toolbar {
   display: flex;
-  justify-content: center;
-  margin-bottom: 1rem;
+  align-items: center;
+  gap: 1.8rem;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
 }
 
-.controls label {
-  font-size: 1rem;
-  color: #444;
+.toolbar label {
+  font-weight: 500;
 }
 
-.controls select {
-  margin-left: 0.5rem;
-  padding: 0.5rem 1rem;
-  font-size: 1rem;
-  border-radius: 5px;
+.toolbar select {
+  padding: 6px 10px;
+  border-radius: 4px;
   border: 1px solid #ccc;
+  font-size: 14px;
 }
 
-/* Table styling */
+.add-student-link {
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.back-button {
+  background-color: #607d8b;
+  color: white;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.add-student-link:hover,
+.back-button:hover {
+  opacity: 0.9;
+}
+
 table {
   width: 100%;
   border-collapse: collapse;
-  background-color: white;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+  margin-top: 20px;
+  font-size: 14px;
+}
+
+thead {
+  background-color: #f5f5f5;
 }
 
 th,
 td {
-  padding: 0.75rem;
-  text-align: center;
+  padding: 10px;
+  text-align: left;
   border: 1px solid #ddd;
 }
 
-th {
-  background-color: #f0f0f0;
-  color: #333;
-  cursor: default;
-  font-weight: 600;
-  user-select: none;
-}
-
-th:hover {
-  background-color: #e9e9e9;
-}
-
-th:last-child {
+th.sortable:hover {
   cursor: pointer;
+  text-decoration: underline;
 }
 
-tr:hover {
-  background-color: #fafafa;
-  transition: background-color 0.3s ease;
+td button {
+  padding: 6px 10px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 13px;
+  margin-right: 5px;
 }
 
-/* Add this to StudentList.css */
-.add-student-link {
-  margin-left: 2rem;
-  background-color: #28a745;
-  padding: 0.5rem 1rem;
+.edit-button {
+  background-color: #2196f3;
   color: white;
-  text-decoration: none;
-  border-radius: 5px;
-  font-weight: bold;
-}
-
-.add-student-link:hover {
-  background-color: #218838;
 }
 
 .delete-button {
-  background-color: #dc3545;
-  border: none;
+  background-color: #f44336;
   color: white;
-  padding: 0.4rem 0.8rem;
-  border-radius: 5px;
-  cursor: pointer;
 }
 
+.edit-button:hover,
 .delete-button:hover {
-  background-color: #c82333;
+  opacity: 0.85;
 }

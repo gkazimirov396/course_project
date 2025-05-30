@@ -43,9 +43,9 @@ class Login extends Component<LoginProps, LoginState> {
 
     try {
       const result = await supabaseService.signIn(email, password);
+
       console.log('Login successful:', result);
       this.props.navigate('/home');
-
       alert('Login successful! Redirecting...');
     } catch (error) {
       console.error('Login error:', error);
@@ -61,6 +61,7 @@ class Login extends Component<LoginProps, LoginState> {
         <form className="login-form" onSubmit={this.handleSubmit}>
           <input
             type="email"
+            required
             placeholder="test@gmail.com"
             value={this.state.email}
             onChange={this.handleEmailChange}
@@ -68,6 +69,7 @@ class Login extends Component<LoginProps, LoginState> {
 
           <input
             type="password"
+            required
             placeholder="******"
             value={this.state.password}
             onChange={this.handlePasswordChange}
